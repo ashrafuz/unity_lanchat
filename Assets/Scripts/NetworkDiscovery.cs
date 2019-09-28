@@ -54,7 +54,7 @@ namespace RB_LANCHAT {
                 mBroadcastManager.StartUDPServer (_name, Server_OnJoinReqReceived);
 
                 smp = new RoomBroadcastPacket ();
-                smp.serverName = string.IsNullOrEmpty (_name.Trim ()) ? NetworkUtil.GetRandomRoomName () : _name;
+                smp.serverName = _name;
                 smp.ip = (mBroadcastManager.GetServer ().LocalEndPoint as IPEndPoint).Address.ToString ();
                 smp.port = (mBroadcastManager.GetServer ().LocalEndPoint as IPEndPoint).Port;
                 pingData = NetworkUtil.GetBytes (JsonUtility.ToJson (smp));

@@ -24,6 +24,7 @@ namespace RB_LANCHAT {
         [SerializeField] private TextMeshProUGUI m_NormalMsgText;
         [SerializeField] private TextMeshProUGUI m_ConveyMsgText;
         [SerializeField] private TMP_InputField m_RoomInputField;
+        [SerializeField] private TMP_InputField m_JoinRoomInputField;
         [SerializeField] private RectTransform m_HostListHolder;
         [SerializeField] private GameObject m_JoinBtnPrefab;
         [SerializeField] private GameObject m_JoinRoomPanel;
@@ -81,8 +82,8 @@ namespace RB_LANCHAT {
 
         private void AddBtnListeners () {
             m_CreateBtn.onClick.AddListener (() => {
-                m_NetworkDiscovery.StartBroadCastPing (m_RoomInputField.text);
-                HOST_NAME = m_RoomInputField.text;
+                HOST_NAME = string.IsNullOrEmpty (m_RoomInputField.text.Trim ()) ? NetworkUtil.GetRandomRoomName () : m_RoomInputField.text;
+                m_NetworkDiscovery.StartBroadCastPing (HOST_NAME);
 
                 m_JoinRoomPanel.gameObject.SetActive (true);
                 m_Joinbtn.gameObject.SetActive (false);
@@ -104,16 +105,14 @@ namespace RB_LANCHAT {
             });
 
             m_Joinbtn.onClick.AddListener (() => {
+                HOST_NAME = string.IsNullOrEmpty (m_JoinRoomInputField.text.Trim ()) ? NetworkUtil.GetRandomRoomName () : m_JoinRoomInputField.text;
+
                 m_JoinRoomPanel.gameObject.SetActive (true);
                 m_Joinbtn.gameObject.SetActive (false);
                 m_CreateBtn.gameObject.SetActive (false);
 
                 m_NormalMsgText.text = "Please wait...Finding Game Servers to join. \n";
                 m_NetworkDiscovery.StartLocalClient ();
-            });
-
-            m_RoomInputField.onValueChanged.AddListener (delegate {
-                SaveMyName ();
             });
 
             m_RefreshNetBtn.onClick.AddListener (() => {
@@ -125,9 +124,6 @@ namespace RB_LANCHAT {
                     ConveyMessage ("Please Make sure your internet is on & connect to same wifi/hotspot.");
                 }
             });
-        }
-        private void SaveMyName () {
-            HOST_NAME = string.IsNullOrEmpty (m_RoomInputField.text.Trim ()) ? SystemInfo.deviceName : m_RoomInputField.text.Trim ();
         }
 
         private void SetupLobby () {
@@ -190,7 +186,7 @@ namespace RB_LANCHAT {
                         goBtn.interactable = true;
                     }
                 });
-                goText.text = "JOIN : " + serverInfo.serverName;
+                goText.text = serverInfo.serverName + "'s Room";
             }
             m_HostListHolder.gameObject.SetActive (true);
         }
@@ -362,7 +358,7 @@ namespace RB_LANCHAT {
 
         public void PassMessage (string _smpStr) {
             SimpleMessagePacket smp = JsonUtility.FromJson<SimpleMessagePacket> (_smpStr);
-            m_ChatBox.AddToBox ("<size=20><color=#874B80>" + smp.fromName + " said : </size></color> <b>" + smp.msg + "</b>");
+            m_ChatBox.AddToBox ("<size=26><color=#51FF15>" + smp.fromName + " said : </size></color> <b>" + smp.msg + "</b>");
         }
 
         public void RPCStartGameWith (int data) {

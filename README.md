@@ -12,6 +12,8 @@ Well, the project is divided into two parts mainly.
  1. Network Discovery : using UDP connection to discover other devices running the same app (done via PORT).
  2. Chat: After discovering the connections, we check if all connections (Defined by PLAYER_MAX_COUNT) joined in the network. If so, we connect the TCP clients together. And the rest of the chat is easily done via the TCP handler.
  
+ * See LAN.pdf for a visual representation of the project. Also, excuse my color & shape choice :P
+ 
  ## Network Discovery
 Its a UDP connection system. So the idea is, in a LAN, the first 3 section of the IP address is same. So lets say, device A & device B is connected to the same internet. Then, in a IPv4 system, they will share an IP like this :
 
